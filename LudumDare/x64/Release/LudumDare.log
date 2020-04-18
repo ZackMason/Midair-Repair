@@ -1,0 +1,36 @@
+﻿  main.cpp
+c:\users\zack\source\repos\ludumdare\ludumdare\main.cpp(36): warning C4244: 'initializing': conversion from 'float' to 'const u32', possible loss of data
+c:\users\zack\source\repos\ludumdare\ludumdare\main.cpp(37): warning C4244: 'initializing': conversion from 'float' to 'const u32', possible loss of data
+c:\users\zack\source\repos\ludumdare\ludumdare\main.cpp(143): warning C4244: 'argument': conversion from 'f64' to 'float', possible loss of data
+c:\users\zack\source\repos\ludumdare\ludumdare\main.cpp(147): warning C4244: 'argument': conversion from 'f64' to 'float', possible loss of data
+c:\users\zack\source\repos\ludumdare\ludumdare\main.cpp(151): warning C4244: 'argument': conversion from 'f64' to 'float', possible loss of data
+c:\users\zack\source\repos\ludumdare\ludumdare\main.cpp(155): warning C4244: 'argument': conversion from 'f64' to 'float', possible loss of data
+c:\users\zack\source\repos\ludumdare\ludumdare\main.cpp(159): warning C4244: 'argument': conversion from 'f64' to 'float', possible loss of data
+c:\users\zack\source\repos\ludumdare\ludumdare\main.cpp(163): warning C4244: 'argument': conversion from 'f64' to 'float', possible loss of data
+c:\users\zack\source\repos\ludumdare\ludumdare\main.cpp(167): warning C4244: 'argument': conversion from 'f64' to 'f32', possible loss of data
+main.obj : error LNK2001: unresolved external symbol LoadShader
+main.obj : error LNK2001: unresolved external symbol LoadModel
+main.obj : error LNK2001: unresolved external symbol IsKeyDown
+main.obj : error LNK2001: unresolved external symbol EndMode3D
+main.obj : error LNK2001: unresolved external symbol SetConfigFlags
+main.obj : error LNK2001: unresolved external symbol BeginMode3D
+main.obj : error LNK2001: unresolved external symbol GenImagePerlinNoise
+main.obj : error LNK2001: unresolved external symbol SetCameraMode
+main.obj : error LNK2001: unresolved external symbol GetShaderLocation
+main.obj : error LNK2001: unresolved external symbol ClearBackground
+main.obj : error LNK2001: unresolved external symbol UpdateCamera
+main.obj : error LNK2001: unresolved external symbol DrawFPS
+main.obj : error LNK2001: unresolved external symbol GetTime
+main.obj : error LNK2001: unresolved external symbol LoadTexture
+main.obj : error LNK2001: unresolved external symbol WindowShouldClose
+main.obj : error LNK2001: unresolved external symbol GenMeshHeightmap
+main.obj : error LNK2001: unresolved external symbol DrawGrid
+main.obj : error LNK2001: unresolved external symbol TextFormat
+main.obj : error LNK2001: unresolved external symbol LoadModelFromMesh
+main.obj : error LNK2001: unresolved external symbol BeginDrawing
+main.obj : error LNK2001: unresolved external symbol SetShaderValue
+main.obj : error LNK2001: unresolved external symbol InitWindow
+main.obj : error LNK2001: unresolved external symbol DrawModel
+main.obj : error LNK2001: unresolved external symbol DrawText
+main.obj : error LNK2001: unresolved external symbol EndDrawing
+C:\Users\zack\source\repos\LudumDare\x64\Release\LudumDare.exe : fatal error LNK1120: 25 unresolved externals

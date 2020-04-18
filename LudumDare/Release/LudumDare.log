@@ -1,0 +1,35 @@
+﻿  main.cpp
+c:\users\zack\desktop\vcpkg\installed\x86-windows\include\raylib.h(86): warning C4005: 'RLAPI': macro redefinition
+  c:\users\zack\desktop\vcpkg\installed\x86-windows\include\raylib.h(79): note: see previous definition of 'RLAPI'
+c:\users\zack\source\repos\ludumdare\ludumdare\src\cloud.h(15): warning C4018: '<': signed/unsigned mismatch
+c:\users\zack\source\repos\ludumdare\ludumdare\src\plane.h(91): warning C4018: '<': signed/unsigned mismatch
+c:\users\zack\source\repos\ludumdare\ludumdare\src\main.cpp(31): warning C4244: 'initializing': conversion from 'float' to 'const u32', possible loss of data
+c:\users\zack\source\repos\ludumdare\ludumdare\src\main.cpp(32): warning C4244: 'initializing': conversion from 'float' to 'const u32', possible loss of data
+c:\users\zack\source\repos\ludumdare\ludumdare\src\main.cpp(166): warning C4244: '+=': conversion from 'f64' to 'float', possible loss of data
+c:\users\zack\source\repos\ludumdare\ludumdare\src\main.cpp(170): warning C4244: '-=': conversion from 'f64' to 'float', possible loss of data
+c:\users\zack\source\repos\ludumdare\ludumdare\src\main.cpp(174): warning C4244: '-=': conversion from 'f64' to 'float', possible loss of data
+c:\users\zack\source\repos\ludumdare\ludumdare\src\main.cpp(175): warning C4244: '-=': conversion from 'f64' to 'float', possible loss of data
+c:\users\zack\source\repos\ludumdare\ludumdare\src\main.cpp(179): warning C4244: '+=': conversion from 'f64' to 'float', possible loss of data
+c:\users\zack\source\repos\ludumdare\ludumdare\src\main.cpp(180): warning C4244: '+=': conversion from 'f64' to 'float', possible loss of data
+c:\users\zack\source\repos\ludumdare\ludumdare\src\main.cpp(184): warning C4244: '-=': conversion from 'f64' to 'float', possible loss of data
+c:\users\zack\source\repos\ludumdare\ludumdare\src\main.cpp(188): warning C4244: '+=': conversion from 'f64' to 'float', possible loss of data
+c:\users\zack\source\repos\ludumdare\ludumdare\src\main.cpp(192): warning C4244: 'argument': conversion from 'f64' to 'f32', possible loss of data
+c:\users\zack\source\repos\ludumdare\ludumdare\src\main.cpp(207): warning C4244: 'argument': conversion from 'f64' to 'float', possible loss of data
+c:\users\zack\source\repos\ludumdare\ludumdare\src\main.cpp(213): warning C4244: 'argument': conversion from 'f64' to 'f32', possible loss of data
+c:\users\zack\source\repos\ludumdare\ludumdare\src\main.cpp(250): warning C4244: 'argument': conversion from 'f64' to 'f32', possible loss of data
+c:\users\zack\source\repos\ludumdare\ludumdare\src\main.cpp(231): warning C4244: 'argument': conversion from 'f64' to 'f32', possible loss of data
+  c:\program files (x86)\microsoft visual studio\2017\community\vc\tools\msvc\14.16.27023\include\algorithm(2085): note: see reference to function template instantiation 'auto main::<lambda_a1fa18d890e78a248042fd0e25675800>::operator ()<Missile>(Missile &) const' being compiled
+  c:\users\zack\source\repos\ludumdare\ludumdare\src\main.cpp(248): note: see reference to function template instantiation '_FwdIt std::remove_if<std::_Vector_iterator<std::_Vector_val<std::_Simple_types<_Ty>>>,main::<lambda_a1fa18d890e78a248042fd0e25675800>>(_FwdIt,const _FwdIt,_Pr)' being compiled
+          with
+          [
+              _FwdIt=std::_Vector_iterator<std::_Vector_val<std::_Simple_types<Missile>>>,
+              _Ty=Missile,
+              _Pr=main::<lambda_a1fa18d890e78a248042fd0e25675800>
+          ]
+c:\users\zack\source\repos\ludumdare\ludumdare\src\main.cpp(234): warning C4244: '-=': conversion from 'f64' to 'f32', possible loss of data
+  Generating code
+  1 of 1034 functions (<0.1%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    1 functions had inline decision re-evaluated but remain unchanged
+  Finished generating code
+  LudumDare.vcxproj -> C:\Users\zack\source\repos\LudumDare\Release\LudumDare.exe

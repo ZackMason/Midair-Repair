@@ -1,0 +1,13 @@
+﻿  main.cpp
+c:\users\zack\desktop\vcpkg\installed\x86-windows\include\raylib.h(86): warning C4005: 'RLAPI': macro redefinition
+  c:\users\zack\desktop\vcpkg\installed\x86-windows\include\raylib.h(79): note: see previous definition of 'RLAPI'
+c:\users\zack\source\repos\ludumdare\ludumdare\main.cpp(36): warning C4244: 'initializing': conversion from 'float' to 'const u32', possible loss of data
+c:\users\zack\source\repos\ludumdare\ludumdare\main.cpp(37): warning C4244: 'initializing': conversion from 'float' to 'const u32', possible loss of data
+c:\users\zack\source\repos\ludumdare\ludumdare\main.cpp(143): warning C4244: 'argument': conversion from 'f64' to 'float', possible loss of data
+c:\users\zack\source\repos\ludumdare\ludumdare\main.cpp(147): warning C4244: 'argument': conversion from 'f64' to 'float', possible loss of data
+c:\users\zack\source\repos\ludumdare\ludumdare\main.cpp(151): warning C4244: 'argument': conversion from 'f64' to 'float', possible loss of data
+c:\users\zack\source\repos\ludumdare\ludumdare\main.cpp(155): warning C4244: 'argument': conversion from 'f64' to 'float', possible loss of data
+c:\users\zack\source\repos\ludumdare\ludumdare\main.cpp(159): warning C4244: 'argument': conversion from 'f64' to 'float', possible loss of data
+c:\users\zack\source\repos\ludumdare\ludumdare\main.cpp(163): warning C4244: 'argument': conversion from 'f64' to 'float', possible loss of data
+c:\users\zack\source\repos\ludumdare\ludumdare\main.cpp(167): warning C4244: 'argument': conversion from 'f64' to 'f32', possible loss of data
+  LudumDare.vcxproj -> C:\Users\zack\source\repos\LudumDare\Debug\LudumDare.exe
