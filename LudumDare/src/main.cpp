@@ -29,6 +29,12 @@
 #include "Building.h"
 #include "Puzzles.h"
 
+enum class eScreen : u32
+{
+	START, GAME, RULES, SIZE
+};
+static eScreen gsCUR_SCREEN = eScreen::START;
+
 
 glm::vec3 v3(const Vector3& o)
 {
@@ -60,6 +66,83 @@ Matrix m4(const glm::mat4& o)
 	return res;
 }
 
+void Rules()
+{
+	BeginDrawing();
+	ClearBackground(BLUE);
+
+	DrawText("Welcome to Mid-air Repair", 100, 100, 35, BLACK);
+	DrawText("Use the mouse to steer the airplane", 100, 130, 35, BLACK);
+	DrawText("Use the mouse to solve puzzles", 100, 160, 35, BLACK);
+	DrawText("Wait how does that work?..", 100, 190, 35, BLACK);
+
+
+	Rectangle back_rec = { 90, 395, 200, 50 };
+	DrawRectangleRec(back_rec, GRAY);
+	bool back_hover = CheckCollisionPointRec(GetMousePosition(), back_rec);
+	DrawText("BACK", 100, 400, 45, back_hover ? RED : WHITE);
+	if (back_hover && IsMouseButtonReleased(0)) gsCUR_SCREEN = eScreen::START;
+
+	EndDrawing();
+}
+
+void Title(Model& plane, Camera& cam, Model& ground, Model& clouds, const Vector2& dm, f32 sDT)
+{
+	if (IsKeyPressed(KEY_ENTER))
+	{
+		gsCUR_SCREEN = eScreen::GAME;
+		return;
+	}
+
+
+	// Rendering
+	BeginDrawing();
+	ClearBackground(BLUE);
+
+	static f32 t = 0.0f, phi = DEG2RAD * 80.f, rho = 2.50f;
+	t += sDT;
+	
+	//t += dm.x / (f32)SCREEN_WIDTH;
+	//phi += dm.y / (f32)SCREEN_HEIGHT;
+
+	Vector3 pos = { cosf(t) * sinf(phi) * rho, cosf(phi)* rho, sinf(t) * sinf(phi)* rho };
+
+	//SetCameraMode(cam, CAMERA_ORBITAL);
+	//UpdateCamera(&cam);
+	cam.position = pos;
+	cam.target = { 0,0,0 };
+
+
+	BeginMode3D(cam);
+
+	plane.transform = MatrixIdentity();
+	ground.transform = MatrixIdentity();
+	clouds.transform = MatrixIdentity();
+
+
+	DrawModel(plane, Vector3Zero(), 1.0f, WHITE);
+	DrawModel(ground, { 0,-3.5,0 }, 1.0f, WHITE);
+
+	EndMode3D();
+
+	Rectangle start_rec = {90, 195, 200, 50};
+	DrawRectangleRec(start_rec, GRAY);
+	bool start_hover = CheckCollisionPointRec(GetMousePosition(), start_rec);
+	DrawText("START", 100, 200, 45, start_hover ? RED : WHITE);
+
+	Rectangle rules_rec = { 90, 265, 200, 50 };
+	DrawRectangleRec(rules_rec, GRAY);
+	bool rules_hover = CheckCollisionPointRec(GetMousePosition(), rules_rec);
+	DrawText("RULES", 100, 270, 45, rules_hover ? RED : WHITE);
+	
+	DrawText("Mid-air Repair", SCREEN_WIDTH/3, SCREEN_HEIGHT/6, 45, YELLOW);
+
+	if (start_hover && IsMouseButtonReleased(0)) gsCUR_SCREEN = eScreen::GAME;
+	if (rules_hover && IsMouseButtonReleased(0)) gsCUR_SCREEN = eScreen::RULES;
+	
+	EndDrawing();
+}
+
 int main()
 {
 	SetConfigFlags(FLAG_MSAA_4X_HINT);
@@ -73,7 +156,8 @@ int main()
 	sCamera.up = { 0,1,0 };
 	sCamera.type = CAMERA_PERSPECTIVE;
 
-	SetCameraMode(sCamera, CAMERA_FREE);
+	SetCameraMode(sCamera, CAMERA_CUSTOM);
+	//SetCameraMode(sCamera, CAMERA_ORBITAL);
 
 	// sound
 	Sound Explo = LoadSound((MUSIC_PATH + "Explosion.wav").c_str());
@@ -171,6 +255,7 @@ int main()
 	//SetTargetFPS(60);
 	//ToggleFullscreen();
 
+
 	auto last_mouse = GetMousePosition();
 	auto cur_mouse = GetMousePosition();
 	auto delta_mouse = Vector2Subtract(last_mouse, cur_mouse);
@@ -183,8 +268,23 @@ int main()
 		delta_mouse = Vector2Subtract({SCREEN_WIDTH/2.f,SCREEN_HEIGHT/2.f}, cur_mouse);
 		delta_mouse.x = delta_mouse.x / (f32)SCREEN_WIDTH * -1.5f;
 		delta_mouse.y = delta_mouse.y / (f32)SCREEN_HEIGHT * 1.5f;
+
+		last_mouse = cur_mouse;
+		sLast_Time = sCur_Time;
 		// End Time
 
+		if(gsCUR_SCREEN == eScreen::START)
+		{
+			Title(f20_plane_model, sCamera, Ground, Cloud_Model, delta_mouse,sDT);
+			continue;
+		}
+
+		if (gsCUR_SCREEN == eScreen::RULES)
+		{
+			Rules();
+			continue;
+		}
+		
 		if(PlayerPlane.health <= 0.f)
 		{
 			PlaySound(Explo);
@@ -204,6 +304,13 @@ int main()
 		PlayerPlane.rot.x += delta_mouse.y * sDT;
 
 		if (IsMouseButtonPressed(0)) PlayerPlane.health -= 1;
+
+		if (IsKeyDown('`')) 
+		{
+			sCamera.up = { 0,1,0 };
+			gsCUR_SCREEN = eScreen::START;
+			continue;
+		}
 		
 		if (IsKeyDown('W'))
 		{
@@ -371,8 +478,7 @@ int main()
 		EndDrawing();
 
 		// End Rendering
-		last_mouse = cur_mouse;
-		sLast_Time = sCur_Time;
+
 	}
 
 	return 0;

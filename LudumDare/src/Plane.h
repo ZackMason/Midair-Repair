@@ -79,7 +79,7 @@ void PlaneUpdate(Plane& plane, f32 sDT)
 	plane.forward = forward;
 	plane.up = up;
 
-	plane.health -= sDT;
+	plane.health -= sDT * 2.0f;
 	
 	plane.speed -= (plane.forward.y<0.f ? 2.0f : 1.0f) * (plane.forward.y * 20.0f) * sDT;
 	plane.speed = std::clamp(plane.speed, 10.f, 55.0f);
