@@ -15,7 +15,7 @@ void PopulateClouds(std::vector<Cloud>& storage, Model& model, u32 count)
 	for( int i = 0; i < count; i++)
 	{
 		Cloud new_cloud = {};
-		new_cloud.position = { (f32)GetRandomValue(-100,100), (f32)GetRandomValue(10,25), (f32)GetRandomValue(-100,100) };
+		new_cloud.position = { (f32)GetRandomValue(-100,300), (f32)GetRandomValue(10,25), (f32)GetRandomValue(-100,100) };
 		new_cloud.model = &model;
 		storage.push_back(new_cloud);
 	}

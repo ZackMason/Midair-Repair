@@ -136,6 +136,7 @@
     <ClCompile Include="src\raylib\src\utils.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Building.h" />
     <ClInclude Include="src\Cloud.h" />
     <ClInclude Include="src\glm\common.hpp" />
     <ClInclude Include="src\glm\detail\compute_common.hpp" />
@@ -381,6 +382,7 @@
     <ClInclude Include="src\glm\vec4.hpp" />
     <ClInclude Include="src\glm\vector_relational.hpp" />
     <ClInclude Include="src\Plane.h" />
+    <ClInclude Include="src\Puzzles.h" />
     <ClInclude Include="src\Types.h" />
   </ItemGroup>
   <ItemGroup>

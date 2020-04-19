@@ -27,6 +27,10 @@ enum class eTeamTag : u32
 	FRIENDLY, ENEMY, SIZE
 };
 
+constexpr f32 SCREEN_SCALE = 1.0f;// 1.5f * 2;
+constexpr u32 SCREEN_WIDTH = 1280;// 640 * SCREEN_SCALE;
+constexpr u32 SCREEN_HEIGHT = 840;// 480 * SCREEN_SCALE;
+
 Vector3 inline operator+(const Vector3& a, const Vector3& b)
 {
 	return Vector3Add(a, b);

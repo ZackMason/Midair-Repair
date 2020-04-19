@@ -26,10 +26,9 @@
 #include "Cloud.h"
 #include "Plane.h"
 #include "glm/gtx/quaternion.hpp"
+#include "Building.h"
+#include "Puzzles.h"
 
-constexpr f32 SCREEN_SCALE = 1.5f;
-constexpr u32 SCREEN_WIDTH = 640 * SCREEN_SCALE;
-constexpr u32 SCREEN_HEIGHT = 480 * SCREEN_SCALE;
 
 glm::vec3 v3(const Vector3& o)
 {
@@ -99,7 +98,7 @@ int main()
 
 	// plane
 	Texture Plane_Tex = LoadTexture((TEX_PATH + "Plane_Color_pallet.png").c_str());
-	Model f20_plane_model = LoadModel((MESH_PATH + "f20.obj").c_str());
+	Model f20_plane_model = LoadModel((MESH_PATH + "f20_s.obj").c_str());
 
 	f20_plane_model.materials[0].shader = shader;
 	
@@ -128,7 +127,7 @@ int main()
 	GenImagePerlinNoise(100, 100, 0, 0, 1);
 	Image Height_Map = GenImagePerlinNoise(100, 100, 0, 0, 1);
 	Texture Height_Tex = LoadTextureFromImage(Height_Map);
-	Model Ground = LoadModel((MESH_PATH + "Ground_Base.obj").c_str());  //LoadModelFromMesh(GenMeshHeightmap(Height_Map, {100,18,100}));
+	Model Ground = LoadModel((MESH_PATH + "Ground_smoothed.obj").c_str());  //LoadModelFromMesh(GenMeshHeightmap(Height_Map, {100,18,100}));
 	Ground.materials[0].shader = shader;
 	Ground.materials[0].maps[MAP_DIFFUSE].color = Color{ 55, 255, 55,255 };
 	Ground.materials[0].maps[MAP_DIFFUSE].texture = Height_Tex;
@@ -139,6 +138,20 @@ int main()
 	Base_Model.materials[0].shader = shader;
 	Base_Model.materials[0].maps[MAP_DIFFUSE].color = Color{ 255, 255, 255,255 };
 	Base_Model.materials[0].maps[MAP_DIFFUSE].texture = Base_Tex;
+
+	Model Pillar_Model = LoadModel((MESH_PATH + "Pillars.obj").c_str());
+	Pillar_Model.materials[0].shader = shader;
+	Pillar_Model.materials[0].maps[MAP_DIFFUSE].color = Color{ 155, 225, 55,255 };
+	
+	// buildings
+	Model Building_Model = LoadModel((MESH_PATH + "building_01.obj").c_str());
+	Texture Building_Tex = LoadTexture((TEX_PATH + "Building_Color_Pallet.png").c_str());
+	Building_Model.materials[0].shader = shader;
+	Building_Model.materials[0].maps[MAP_DIFFUSE].color = Color{ 255, 255, 255,255 };
+	Building_Model.materials[0].maps[MAP_DIFFUSE].texture = Base_Tex;
+
+	// images
+	Texture blank = LoadTexture((TEX_PATH + "white.png").c_str());
 	
 	static f64 sCur_Time = GetTime(); // in seconds
 	static f64 sLast_Time = sCur_Time; // in seconds
@@ -147,20 +160,51 @@ int main()
 	std::vector<Missile> PlayerMissles;
 	std::vector<Plane> Enemies;
 	std::vector<Cloud> Clouds;
+	std::vector<Building> Buildings;
+	PopulateBuildings(Buildings, Building_Model, Ground, 10);
 	PopulateClouds(Clouds, Cloud_Model, 250);
 	PopulateEnemyPlanes(Enemies, f20_plane_model, 10);
 
-	SetTargetFPS(60);
+	Puzzle test_puzzle;
+	MakePuzzle(test_puzzle, 10);
 	
+	//SetTargetFPS(60);
+	//ToggleFullscreen();
+
+	auto last_mouse = GetMousePosition();
+	auto cur_mouse = GetMousePosition();
+	auto delta_mouse = Vector2Subtract(last_mouse, cur_mouse);
 	while (!WindowShouldClose())
 	{
 		// Time
 		sCur_Time = GetTime();
 		sDT = sCur_Time - sLast_Time;
+		cur_mouse = GetMousePosition();
+		delta_mouse = Vector2Subtract({SCREEN_WIDTH/2.f,SCREEN_HEIGHT/2.f}, cur_mouse);
+		delta_mouse.x = delta_mouse.x / (f32)SCREEN_WIDTH * -1.5f;
+		delta_mouse.y = delta_mouse.y / (f32)SCREEN_HEIGHT * 1.5f;
 		// End Time
-		
+
+		if(PlayerPlane.health <= 0.f)
+		{
+			PlaySound(Explo);
+			test_puzzle = Puzzle();
+			MakePuzzle(test_puzzle,10);
+			
+			PlayerPlane = Plane();
+			PlayerPlane.transform = MatrixIdentity();
+			PlayerPlane.tag = eTeamTag::FRIENDLY;
+			PlayerPlane.model = &f20_plane_model;
+		}
 		// Input
 		constexpr f32 rot_speed = 3.f;
+
+		PlayerPlane.rot.y += delta_mouse.x * sDT;
+		PlayerPlane.rot.z += delta_mouse.x * sDT * 2.0f;
+		PlayerPlane.rot.x += delta_mouse.y * sDT;
+
+		if (IsMouseButtonPressed(0)) PlayerPlane.health -= 1;
+		
 		if (IsKeyDown('W'))
 		{
 			PlayerPlane.rot.x += sDT;
@@ -171,12 +215,12 @@ int main()
 		}
 		if (IsKeyDown('A'))
 		{
-			PlayerPlane.rot.z -= sDT;
+			PlayerPlane.rot.z -= sDT * 2.0f;
 			PlayerPlane.rot.y -= sDT;
 		}
 		if (IsKeyDown('D'))
 		{
-			PlayerPlane.rot.z += sDT;
+			PlayerPlane.rot.z += sDT * 2.0f;
 			PlayerPlane.rot.y += sDT;
 		}
 		if (IsKeyDown('Q'))
@@ -189,7 +233,8 @@ int main()
 		}
 		if (IsKeyDown(KEY_LEFT_SHIFT))
 		{
-			PlayerPlane.position = PlayerPlane.position + PlayerPlane.forward * 10.f * sDT;
+			PlayerPlane.speed += sDT * 4.0f;
+			//PlayerPlane.position = PlayerPlane.position + PlayerPlane.forward * 10.f * sDT;
 		}
 		if(IsKeyPressed(KEY_SPACE))
 		{
@@ -204,7 +249,8 @@ int main()
 		PlayerPlane.transform = MatrixRotateZ(PlayerPlane.rot.z) * MatrixRotateX(PlayerPlane.rot.x) * MatrixRotateY(PlayerPlane.rot.y) * PlayerPlane.transform;
 		//PlayerPlane.transform = MatrixRotateZ(PlayerPlane.rot.z) * PlayerPlane.transform;
 		
-		PlayerPlane.rot.z = Lerp(PlayerPlane.rot.z, 0.0f, 1.0f - powf(0.1f,sDT));
+		PlayerPlane.rot.z = Lerp(PlayerPlane.rot.z, 0.0f, 1.0f - powf(0.1f, sDT));
+		PlayerPlane.rot.x = Lerp(PlayerPlane.rot.x, 0.0f, 1.0f - powf(0.15f,sDT));
 		
 		// End Input
 		
@@ -213,7 +259,7 @@ int main()
 		PlaneUpdate(PlayerPlane, sDT);
 		
 		UpdateCamera(&sCamera);
-		PlaneCameraFollow(PlayerPlane, sCamera);
+		PlaneCameraFollow(PlayerPlane, sCamera,sDT);
 		float cameraPos[3] = { sCamera.position.x, sCamera.position.y, sCamera.position.z };
 		SetShaderValue(shader, shader.locs[LOC_VECTOR_VIEW], cameraPos, UNIFORM_VEC3);
 
@@ -226,7 +272,7 @@ int main()
 		BeginMode3D(sCamera);
 
 		//for (auto& missile : PlayerMissles)
-		PlayerMissles.erase(std::remove_if(PlayerMissles.begin(), PlayerMissles.end(), [&missile_model, &Explo, &Base_Model, &Ground](auto& missile)
+		PlayerMissles.erase(std::remove_if(PlayerMissles.begin(), PlayerMissles.end(), [&missile_model, &Explo, &Ground](auto& missile)
 		{
 			missile.position = missile.position + missile.velocity * sDT;
 			missile_model.transform = missile.transform;
@@ -239,49 +285,93 @@ int main()
 			DrawRay(trace, BLUE);
 			if (info.hit && info.distance < 1.0f)
 				missile.life = -1.0f;
-			info = GetCollisionRayModel(trace, Base_Model);
-			if (info.hit && info.distance < 1.0f)
-				missile.life = -1.0f;
 			
 			if (missile.life < 0.0f) PlaySound(Explo);
 			return missile.life < 0.0f;
 		}),PlayerMissles.end());
 
-		PlaneEnemyUpdate(PlayerPlane, Enemies, sDT);
+		PlaneEnemyUpdate(PlayerPlane, Enemies, Buildings, sDT);
 		
 		PlaneDraw(PlayerPlane);
 		//DrawModel(*PlayerPlane.model, PlayerPlane.position, {1.0f}, WHITE);
-		
+
+		DrawGrid(100, 1.0f);
 		Ray trace = {};
 		trace.position = PlayerPlane.position;
-		trace.direction = PlayerPlane.forward;
-		auto info = GetCollisionRayModel(trace, Ground);
-		DrawRay(trace, BLUE);
-		if(info.hit)
-			DrawSphere(info.position, 1.f, YELLOW);
+		trace.position.y += 1.0f;
+		trace.direction = { 0,-1,0 }; //PlayerPlane.forward;
 		
-		DrawGrid(100, 1.0f);
-		DrawModel(Ground, Vector3Zero(), 1, WHITE);
-		DrawModel(Base_Model, Vector3Zero(), 1, WHITE);
 
+		for (int j = 0; j < 6; j++)
+			for(int i = 0; i < 6; i++)
+		{
+			static Matrix x_flip = MatrixScale(-1,1,-1);//MatrixRotateY(DEG2RAD * 180.0f);
+				
+			Ground.transform = MatrixMultiply(x_flip, Ground.transform);
+			Ground.transform = MatrixTranslate((f32)i * 200, 0, (f32)j * 200) * Ground.transform;
+
+			if (Vector3Distance({ (f32)-i * 200, 0, (f32)-j * 200 }, PlayerPlane.position) < 150.f)
+			{
+				auto info = GetCollisionRayModel(trace, Ground);
+				//DrawRay(trace, BLUE);
+				if (info.hit)
+				{
+					DrawSphere(info.position, .1f, YELLOW);
+					if (info.distance < 1.50f)
+					{
+						PlayerPlane.position.y = info.position.y;
+						PlayerPlane.health -= 10.0f;
+					}
+				}
+				//DrawModelWires(Ground, Vector3Zero(), 1, BLACK);
+
+			}
+			
+			DrawModel(Ground, Vector3Zero(), 1, WHITE);
+			DrawModelWires(Ground, Vector3Zero(), 1, BLACK);
+			Ground.transform = MatrixIdentity();
+		}
+		Ground.transform = MatrixIdentity();
+
+		DrawModel(Pillar_Model, Vector3Zero(), 1, WHITE);
+		//DrawModel(Base_Model, Vector3Zero(), 1, WHITE);
+
+		for(auto& building : Buildings)
+		{
+			building.model->transform = building.transform;
+			DrawModel(*building.model, building.position, 1.0f, WHITE);
+			DrawBillboardRec(sCamera, blank, {0,0,building.health,10}, building.position + Vector3{ 0,4,0 }, 1.0f, RED);
+		}
+		
 		BeginBlendMode(BLEND_ADDITIVE);
-
 		// sort for blending
 		std::sort(Clouds.begin(), Clouds.end(), [&PlayerPlane](auto& a, auto& b) { return Vector3Distance(a.position, PlayerPlane.position) > Vector3Distance(b.position, PlayerPlane.position); });
 		for (auto& cloud : Clouds)
 		{
+			if(Vector3Distance(cloud.position, PlayerPlane.position) > 380.f)
+			{
+				cloud.position = PlayerPlane.position + Vector3{ (f32)GetRandomValue(-300,300), 0., (f32)GetRandomValue(-300,300) };
+				cloud.position.y = (f32)GetRandomValue(10, 25);
+				cloud.velocity = Vector3{ (f32)GetRandomValue(-3,3), 0., (f32)GetRandomValue(-3,3) };
+			}
+			cloud.position = cloud.position + cloud.velocity * sDT;
+			
 			DrawModel(*cloud.model, cloud.position, 1.0f, Color{ 255,255,255,55});//WHITE);
 		}
 		EndBlendMode();
 		
 		EndMode3D();
+
+		DrawPuzzle(test_puzzle, PlayerPlane);
 		
 		DrawFPS(10,10);
 		DrawText(FormatText("sDT: %f", sDT), 10, 40, 10, GRAY);
+		DrawText(FormatText("Speed: %.1f", PlayerPlane.speed), 10, 50, 30, RED);
+		DrawText(FormatText("Health: %.0f", PlayerPlane.health), 10, 80, 30, RED);
 		EndDrawing();
 
 		// End Rendering
-		
+		last_mouse = cur_mouse;
 		sLast_Time = sCur_Time;
 	}
 
