@@ -10,13 +10,14 @@ struct Plane
 {
 	Model* model = nullptr;
 	Matrix transform;
-	Vector3 position = { 0,10, 0 };
+	Vector3 position = { -200,10, -200 };
 	Vector3 velocity = { 0,0,-1 };
 	Vector3 forward = { 0,0,-1 };
 	Vector3 up = { 0,0,-1 };
 	Vector3 target = { 0,0,0 };
 
 	f32 health = 100.f;
+	f32 score = 0.0f;
 	
 	u32 target_index = 0;
 	f32 target_time = 10.f;
@@ -94,11 +95,12 @@ void PlaneEnemyUpdate(Plane& player, std::vector<Plane>& storage, std::vector<Bu
 		Enemy.target_time -= sDT;
 		Enemy.flee_time -= sDT;
 
-		Enemy.target = player.position;
+		//Enemy.target = player.position;
 	
 		Vector3 dir = Vector3Normalize(Enemy.target - Enemy.position) * Enemy.speed;
 		if (Vector3Distance(Enemy.target, Enemy.position) < 4.0f)
 		{
+			Enemy.target = { (f32)GetRandomValue(-900,100), (f32)GetRandomValue(10,25), (f32)GetRandomValue(-900,100) };
 			Enemy.flee_time = 3.0f;
 		}
 		if (Enemy.flee_time > 0.0f)
@@ -125,7 +127,7 @@ void PopulateEnemyPlanes(std::vector<Plane>& storage, Model& model, u32 count)
 	for( int i = 0; i < count; i++)
 	{
 		Plane new_plane;
-		new_plane.position = { (f32)GetRandomValue(-100,100), (f32)GetRandomValue(10,25), (f32)GetRandomValue(-100,100) };
+		new_plane.position = { (f32)GetRandomValue(-900,100), (f32)GetRandomValue(10,25), (f32)GetRandomValue(-900,100) };
 		new_plane.model = &model;
 		new_plane.transform = MatrixIdentity();
 		

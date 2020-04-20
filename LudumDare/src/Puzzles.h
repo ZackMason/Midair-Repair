@@ -40,7 +40,7 @@ void MakePuzzle(Puzzle& puzzle, u32 count)
 	}
 }
 
-void DrawPuzzle(Puzzle& puzzle, Plane& player)
+void DrawPuzzle(Puzzle& puzzle, Plane& player, Sound& Hit_Sound)
 {
 	auto m = GetMousePosition();
 
@@ -62,16 +62,19 @@ void DrawPuzzle(Puzzle& puzzle, Plane& player)
 
 		if (!checked && i == puzzle.current && hovering && IsMouseButtonPressed(0))
 		{
+			StopSound(Hit_Sound);
 			puzzle.current++;
 			puzzle.checked[i] = true;
 			if (GetRandomValue(0, 4) == 2) puzzle.hidden[i] = true;
 			if (GetRandomValue(0, 4) == 2) puzzle.fake[i] = true;
+			player.score += 1;
 		}
 
 		res &= puzzle.checked[i];
 	}
 	if(res)
 	{
+		player.score += 10000.f;
 		player.health = std::clamp(player.health + 35.0f, 0.0f, 100.f);
 		player.speed += 10.f;
 		puzzle = Puzzle();
